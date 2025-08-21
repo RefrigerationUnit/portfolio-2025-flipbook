@@ -83,9 +83,9 @@
     DFLIP.defaults.onReady = function(flipbook){
       // Create nav container and buttons
       var nav = $('<div id="customNav"></div>');
-      // Use squiggle arrows for previous and next buttons
-      var prevBtn = $('<button>&#x21DC;</button>');
-      var nextBtn = $('<button>&#x21DD;</button>');
+      // Use visible arrow icons for previous and next buttons
+      var prevBtn = $('<button>⇜</button>');
+      var nextBtn = $('<button>⇝</button>');
 
       // Attach click handlers
       prevBtn.on('click', function(e){ e.stopPropagation(); if(flipbook && typeof flipbook.prev === 'function'){ flipbook.prev(); } });
