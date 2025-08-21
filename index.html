@@ -8,30 +8,93 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@dearhive/dearflip-jquery-flipbook@1.7.3/dflip/css/dflip.min.css"/>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@dearhive/dearflip-jquery-flipbook@1.7.3/dflip/css/themify-icons.css"/>
   <style>
+    /* Base page styles */
     html, body {
       height: 100%;
       margin: 0;
       padding: 0;
-      background: #fafafa;
+      background: #222; /* dark grey background */
       font-family: sans-serif;
     }
+
+    /* Flipbook container should fill the page */
     #flipbookContainer {
       width: 100%;
       height: 100%;
     }
-    /* Hide loader overlay when pdf fails locally */
+
+    /* Custom bottom navigation styling */
+    #customNav {
+      position: fixed;
+      bottom: 20px;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+      z-index: 10000;
+      pointer-events: none; /* allow clicks to go through except buttons */
+    }
+    #customNav button {
+      pointer-events: auto;
+      background-color: #444;
+      color: #f5f5f5;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+    #customNav button:hover {
+      background-color: #666;
+    }
+
+    /* Override DFlip toolbar to dark grey for better visibility */
+    .df-ui-bar {
+      background-color: #333 !important;
+    }
+    .df-ui-btn {
+      color: #f5f5f5 !important;
+      background-color: #444 !important;
+    }
+    .df-ui-btn:hover {
+      background-color: #666 !important;
+    }
   </style>
 </head>
 <body>
-  <!-- Flipbook container -->
-  <div class="_df_book" id="flipbookContainer" source="portfolio-2025.pdf" backgroundcolor="#ffffff"></div>
-  <!-- jQuery and DFlip scripts -->
-  <script src="https://cdn.jsdelivr.net/npm/@dearhive/dearflip-jquery-flipbook@1.7.3/dflip/js/libs/jquery.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@dearhive/dearflip-jquery-flipbook@1.7.3/dflip/js/dflip.min.js"></script>
-  <!-- Configure DFlip options if needed -->
-  <script>
-    // Example: customizing flipbook once DFlip is ready. Here we can set options globally if required.
-    // DFLIP.defaults = { backgroundColor: '#ffffff' };
-  </script>
+<!-- Flipbook container -->
+<div class="_df_book" id="flipbookContainer" source="portfolio-2025.pdf" backgroundcolor="#333333"></div>
+
+<!-- jQuery and DFlip scripts -->
+<script src="https://cdn.jsdelivr.net/npm/@dearhive/dearflip-jquery-flipbook@1.7.3/dflip/js/libs/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@dearhive/dearflip-jquery-flipbook@1.7.3/dflip/js/dflip.min.js"></script>
+
+<!-- Configure DFlip and add custom navigation -->
+<script>
+  jQuery(function($){
+    // Set global default options for DFlip
+    DFLIP.defaults.backgroundColor = "#333333";
+    DFLIP.defaults.controlsPosition = DFLIP.CONTROLSPOSITION.BOTTOM;
+
+    // When flipbook is ready, add custom navigation
+    DFLIP.defaults.onReady = function(flipbook){
+      // Create nav container and buttons
+      var nav = $('<div id="customNav"></div>');
+      var prevBtn = $('<button>&larr; Prev</button>');
+      var nextBtn = $('<button>Next &rarr;</button>');
+
+      // Attach click handlers
+      prevBtn.on('click', function(e){ e.stopPropagation(); if(flipbook && typeof flipbook.prev === 'function'){ flipbook.prev(); } });
+      nextBtn.on('click', function(e){ e.stopPropagation(); if(flipbook && typeof flipbook.next === 'function'){ flipbook.next(); } });
+
+      nav.append(prevBtn);
+      nav.append(nextBtn);
+      $('body').append(nav);
+    };
+  });
+</script>
 </body>
 </html>
