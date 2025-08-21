@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Portfolio 2025 Flipbook</title>
+  <!-- DFlip CSS for styling and icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@dearhive/dearflip-jquery-flipbook@1.7.3/dflip/css/dflip.min.css"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@dearhive/dearflip-jquery-flipbook@1.7.3/dflip/css/themify-icons.css"/>
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      background: #fafafa;
+      font-family: sans-serif;
+    }
+    #flipbookContainer {
+      width: 100%;
+      height: 100%;
+    }
+    /* Hide loader overlay when pdf fails locally */
+  </style>
+</head>
+<body>
+  <!-- Flipbook container -->
+  <div class="_df_book" id="flipbookContainer" source="portfolio-2025.pdf" backgroundcolor="#ffffff"></div>
+  <!-- jQuery and DFlip scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@dearhive/dearflip-jquery-flipbook@1.7.3/dflip/js/libs/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@dearhive/dearflip-jquery-flipbook@1.7.3/dflip/js/dflip.min.js"></script>
+  <!-- Configure DFlip options if needed -->
+  <script>
+    // Example: customizing flipbook once DFlip is ready. Here we can set options globally if required.
+    // DFLIP.defaults = { backgroundColor: '#ffffff' };
+  </script>
+</body>
+</html>
