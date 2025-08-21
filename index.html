@@ -77,6 +77,9 @@
   jQuery(function($){
     // Set global default options for DFlip
     DFLIP.defaults.backgroundColor = "#333333";
+      // Disable WebGL 3D to avoid long loading issues
+      // Setting webgl to false ensures 2D flipping which loads reliably
+      DFLIP.defaults.webgl = false;
     DFLIP.defaults.controlsPosition = DFLIP.CONTROLSPOSITION.BOTTOM;
 
     // When flipbook is ready, add custom navigation
