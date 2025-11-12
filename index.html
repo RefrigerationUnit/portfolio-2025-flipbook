@@ -23,33 +23,30 @@
       height: 100%;
     }
 
-    /* Custom bottom navigation styling */
-    #customNav {
+    /* Side arrow navigation styling */
+    .side-nav-btn {
       position: fixed;
-      bottom: 20px;
-      left: 0;
-      right: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 20px;
-      z-index: 10000;
-      pointer-events: none; /* allow clicks to go through except buttons */
-    }
-    #customNav button {
-      pointer-events: auto;
-      background-color: #444;
-      color: #f5f5f5;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 44px;
+      height: 44px;
+      border-radius: 22px;
       border: none;
-      padding: 10px 16px;
-      border-radius: 4px;
-      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: rgba(0,0,0,0.5);
+      color: #fff;
       cursor: pointer;
-      transition: background-color 0.2s ease;
+      z-index: 10010;
+      transition: background-color 0.2s ease, opacity 0.2s ease;
+      opacity: 0.85;
     }
-    #customNav button:hover {
-      background-color: #666;
-    }
+    .side-nav-btn:hover { background-color: rgba(0,0,0,0.7); opacity: 1; }
+    .side-nav-btn:focus { outline: 2px solid #aaa; }
+    .side-left { left: 12px; }
+    .side-right { right: 12px; }
+    .side-nav-btn i { font-size: 20px; line-height: 1; }
 
     /* Override DFlip toolbar to dark grey for better visibility */
     .df-ui-bar {
@@ -77,26 +74,44 @@
   jQuery(function($){
     // Set global default options for DFlip
     DFLIP.defaults.backgroundColor = "#333333";
-      // Disable WebGL 3D to avoid long loading issues
-      // Setting webgl to false ensures 2D flipping which loads reliably
-      DFLIP.defaults.webgl = false;
+    // Disable WebGL 3D to avoid long loading issues (use 2D flipping)
+    DFLIP.defaults.webgl = false;
+    // Show DFlip's toolbar at the bottom
     DFLIP.defaults.controlsPosition = DFLIP.CONTROLSPOSITION.BOTTOM;
 
-    // When flipbook is ready, add custom navigation
+    // When flipbook is ready, add side arrows and toolbar arrows
     DFLIP.defaults.onReady = function(flipbook){
-      // Create nav container and buttons
-      var nav = $('<div id="customNav"></div>');
-      // Use visible arrow icons for previous and next buttons
-      var prevBtn = $('<button>⇜</button>');
-      var nextBtn = $('<button>⇝</button>');
+      // Helper guards
+      var goPrev = function(){ if (flipbook && typeof flipbook.prev === 'function') flipbook.prev(); };
+      var goNext = function(){ if (flipbook && typeof flipbook.next === 'function') flipbook.next(); };
 
-      // Attach click handlers
-      prevBtn.on('click', function(e){ e.stopPropagation(); if(flipbook && typeof flipbook.prev === 'function'){ flipbook.prev(); } });
-      nextBtn.on('click', function(e){ e.stopPropagation(); if(flipbook && typeof flipbook.next === 'function'){ flipbook.next(); } });
+      // 1) Side arrows (left/right of the viewport)
+      var $leftBtn = $('<button class="side-nav-btn side-left" aria-label="Previous page" title="Previous (←)"><i class="ti-angle-left"></i></button>');
+      var $rightBtn = $('<button class="side-nav-btn side-right" aria-label="Next page" title="Next (→)"><i class="ti-angle-right"></i></button>');
+      $leftBtn.on('click', function(e){ e.stopPropagation(); goPrev(); });
+      $rightBtn.on('click', function(e){ e.stopPropagation(); goNext(); });
+      $('body').append($leftBtn, $rightBtn);
 
-      nav.append(prevBtn);
-      nav.append(nextBtn);
-      $('body').append(nav);
+      // 2) Toolbar arrows inside DFlip toolbar
+      // Find the toolbar for this instance. There is only one flipbook here, so select the first .df-ui-bar.
+      var $toolbar = $('.df-ui-bar').first();
+      if ($toolbar.length){
+        var $tPrev = $('<div class="df-ui-btn" role="button" tabindex="0" title="Previous"><i class="ti-angle-left"></i></div>');
+        var $tNext = $('<div class="df-ui-btn" role="button" tabindex="0" title="Next"><i class="ti-angle-right"></i></div>');
+        $tPrev.on('click keypress', function(e){ if (e.type === 'click' || e.key === 'Enter' || e.key === ' ') goPrev(); });
+        $tNext.on('click keypress', function(e){ if (e.type === 'click' || e.key === 'Enter' || e.key === ' ') goNext(); });
+
+        // Insert near the center of the toolbar
+        // Prefer to place them at the start; adjust if toolbar groups exist
+        $toolbar.prepend($tPrev);
+        $toolbar.append($tNext);
+      }
+
+      // 3) Keyboard navigation
+      $(document).on('keydown.dflipNav', function(e){
+        if (e.key === 'ArrowLeft') { e.preventDefault(); goPrev(); }
+        else if (e.key === 'ArrowRight') { e.preventDefault(); goNext(); }
+      });
     };
   });
 </script>
